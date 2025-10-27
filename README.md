@@ -16,3 +16,15 @@ http 요청은 3학년 8반 기준으로 설정되어 있으므로 다른 시간
 
 # 서버 실행하기
 ### uvicorn 및 ngrok을 이용한 실행
+터미널 세션이 종료되더라도 서버가 실행되고, ngrok이 8시간 뒤 종료되는 문제 해결을 위해 start_server.sh를 작성합니다.
+
+아래 .sh 파일에서는 python 가상환경(venv)에서 uvicorn 명령어를 실행합니다.
+```sh
+#start_server.sh
+
+cd /home/{user_name} #홈 경로 이동
+source server/bin/activate #가상환경 활성화
+cd /home/{user_name}/server-files/main #서버 메인 경로로 이동
+nohup uvicorn server_main:app & #터미널 세션이 종료되어도 uvicorn을 백그라운드에서 계속 실행
+while true; do nohup ngrok http 8000; echo "[info] ngrok 종료 감지... 2초후 재시작..."; sleep 2; done  #ngrok 종료가 감지되면 계속 재시작되도록 설정
+```
